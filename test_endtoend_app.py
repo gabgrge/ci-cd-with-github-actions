@@ -15,14 +15,8 @@ class TestAppE2E(unittest.TestCase):
         # Parse the response HTML using BeautifulSoup
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Print the HTML response
-        print(soup.prettify())
-
         # Find the new item in the HTML
-        item = soup.find('li', text='New E2E Item')
-
-        # Print the item
-        print('Item:', item)
+        item = soup.find('li', string=lambda text: 'New E2E Item' in text)
 
         self.assertIsNotNone(item)
 
@@ -37,7 +31,7 @@ class TestAppE2E(unittest.TestCase):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Assert that the item is no longer in the HTML
-        item = soup.find('li', text='New E2E Item')
+        item = soup.find('li', string=lambda text: 'New E2E Item' in text)
         self.assertIsNone(item)
 
 if __name__ == '__main__':
