@@ -20,7 +20,7 @@ class TestAppE2E(unittest.TestCase):
         print(f"HTML response after adding item: {soup.prettify()}")
 
         # Find the new item in the HTML
-        item = soup.find('li', text=lambda text: text is not None and 'New E2E Item' in text)
+        item = soup.find(lambda tag: tag.name == 'li' and 'New E2E Item' in tag.text)
 
         self.assertIsNotNone(item)
 
@@ -39,7 +39,7 @@ class TestAppE2E(unittest.TestCase):
         print(f"HTML response after deleting item: {soup.prettify()}")
 
         # Assert that the item is no longer in the HTML
-        item = soup.find('li', text=lambda text: text is not None and 'New E2E Item' in text)
+        item = soup.find(lambda tag: tag.name == 'li' and 'New E2E Item' in tag.text)
         self.assertIsNone(item)
 
 if __name__ == '__main__':
