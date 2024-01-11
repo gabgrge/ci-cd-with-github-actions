@@ -13,7 +13,9 @@ RUN apt-get update && apt-get install -y \
     && unzip chromedriver.zip \
     && mv chromedriver /usr/local/bin/chromedriver \
     && chmod +x /usr/local/bin/chromedriver \
-    && rm chromedriver.zip
+    && rm chromedriver.zip \
+    && google-chrome --version \
+    && chromedriver --version
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
