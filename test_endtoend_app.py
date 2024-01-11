@@ -1,9 +1,12 @@
 # test_endtoend_app.py
 import unittest
+import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+
+chromedriver_autoinstaller.install()
 
 class TestAppE2E(unittest.TestCase):
     def setUp(self):
