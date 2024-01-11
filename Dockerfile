@@ -9,8 +9,11 @@ RUN apt-get update && apt-get install -y \
     && curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /chrome.deb \
     && dpkg -i /chrome.deb || apt-get install -yf \
     && rm /chrome.deb \
-    && curl https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip -o /usr/local/bin/chromedriver \
-    && chmod +x /usr/local/bin/chromedriver
+    && curl https://chromedriver.storage.googleapis.com/94.0.4606.41/chromedriver_linux64.zip -o chromedriver.zip \
+    && unzip chromedriver.zip \
+    && mv chromedriver /usr/local/bin/chromedriver \
+    && chmod +x /usr/local/bin/chromedriver \
+    && rm chromedriver.zip
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
