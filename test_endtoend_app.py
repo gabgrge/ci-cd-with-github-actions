@@ -1,30 +1,37 @@
 # test_endtoend_app.py
 import unittest
-import chromedriver_autoinstaller
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-
-chromedriver_autoinstaller.install()
+import requests
+from bs4 import BeautifulSoup
 
 class TestAppE2E(unittest.TestCase):
     def setUp(self):
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        self.driver = webdriver.Chrome(options=chrome_options)
-        self.driver.get('http://my-app:5000')
+        self.base_url = 'http://my-app:5000'
 
     def test_add_and_delete_item(self):
-        input_field = self.driver.find_element(By.NAME, 'item')
-        input_field.send_keys('New E2E Item')
-        input_field.send_keys(Keys.RETURN)
-        self.assertIn('New E2E Item', self.driver.page_source)
+        # Send a POST request to add a new item
+        response = requests.post(self.base_url + '/add', data={'item': 'New E2E Item'})
+        self.assertEqual(response.status_code, 200)
 
-        delete_link = self.driver.find_element(By.LINK_TEXT, 'Delete')
-        delete_link.click()
-        self.assertNotIn('New E2E Item', self.driver.page_source)
+        # Parse the response HTML using BeautifulSoup
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-    def tearDown(self):
-        self.driver.close()
+        # Find the new item in the HTML
+        item = soup.find('li', text='New E2E Item')
+        self.assertIsNotNone(item)
+
+        # Extract the item index from the delete link URL
+        index = item.find_next('a', text='Delete')['href'].split('/')[-1]
+
+        # Send a GET request to delete the item
+        response = requests.get(self.base_url + '/delete/' + index)
+        self.assertEqual(response.status_code, 200)
+
+        # Parse the response HTML using BeautifulSoup
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Assert that the item is no longer in the HTML
+        item = soup.find('li', text='New E2E Item')
+        self.assertIsNone(item)
+
+if __name__ == '__main__':
+    unittest.main()
