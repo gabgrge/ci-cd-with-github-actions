@@ -10,14 +10,11 @@ class TestAppE2E(unittest.TestCase):
     def test_add_and_delete_item(self):
         # Send a POST request to add a new item
         response = requests.post(self.base_url + '/add', data={'item': 'New E2E Item'})
-        print(f"Add item response status code: {response.status_code}")
-        print(f"Add item response text: {response.text}")
 
         self.assertEqual(response.status_code, 200)
 
         # Parse the response HTML using BeautifulSoup
         soup = BeautifulSoup(response.text, 'html.parser')
-        print(f"HTML response after adding item: {soup.prettify()}")
 
         # Find the new item in the HTML
         item = soup.find(lambda tag: tag.name == 'li' and 'New E2E Item' in tag.text)
@@ -29,14 +26,11 @@ class TestAppE2E(unittest.TestCase):
 
         # Send a GET request to delete the item
         response = requests.get(self.base_url + '/delete/' + index)
-        print(f"Delete item response status code: {response.status_code}")
-        print(f"Delete item response text: {response.text}")
 
         self.assertEqual(response.status_code, 200)
 
         # Parse the response HTML using BeautifulSoup
         soup = BeautifulSoup(response.text, 'html.parser')
-        print(f"HTML response after deleting item: {soup.prettify()}")
 
         # Assert that the item is no longer in the HTML
         item = soup.find(lambda tag: tag.name == 'li' and 'New E2E Item' in tag.text)
